@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 module.exports = (app) => {
-  app.get('/api/notes', (req, res) => {
+  app.get('./api/notes', (req, res) => {
     fs.readFile('./db/db.json', (err, data) => {
       if (err) throw err;
       noteList = JSON.parse(data);
@@ -26,5 +26,20 @@ module.exports = (app) => {
       });
     });
     res.status(200).send();
+  });
+
+  app.delete('/api/notes:id', (req, res) => {
+    var noteId = req.params.id;
+
+    fs.readFile('./db/db.json', (err, data) => {
+      if (err) throw err;
+      notesList = JSON.parse(data);
+
+      for (var i = 0; i < notesList.length; i++) {
+        if (notesList[i].id === Number(notes)) {
+          notesList.splice([i], 1);
+        }
+      }
+    });
   });
 };
