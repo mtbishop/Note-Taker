@@ -15,8 +15,8 @@ module.exports = (app) => {
       if (err) throw err;
       noteList = JSON.parse(data);
       noteList.push(userNotes);
-      noteList.forEach((x, x) => {
-        x.id = x + 1;
+      noteList.forEach((x, y) => {
+        x.id = y + 1;
         return noteList;
       });
       console.log(noteList);

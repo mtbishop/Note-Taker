@@ -8,5 +8,6 @@ app.use(express.json());
 app.use(express.static('public'));
 
 require('./routing/apirouts')(app);
+require('./routing/htmlrouts')(app);
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
