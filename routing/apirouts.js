@@ -15,8 +15,8 @@ module.exports = (app) => {
       if (err) throw err;
       noteList = JSON.parse(data);
       noteList.push(userNotes);
-      notesList.forEach((item, x) => {
-        item.id = x + 1;
+      noteList.forEach((x, x) => {
+        x.id = x + 1;
         return noteList;
       });
       console.log(noteList);
@@ -33,13 +33,22 @@ module.exports = (app) => {
 
     fs.readFile('./db/db.json', (err, data) => {
       if (err) throw err;
-      notesList = JSON.parse(data);
+      noteList = JSON.parse(data);
 
-      for (var i = 0; i < notesList.length; i++) {
-        if (notesList[i].id === Number(notes)) {
-          notesList.splice([i], 1);
+      for (var i = 0; i < noteList.length; i++) {
+        if (noteList[i].id === Number(notes)) {
+          noteList.splice([i], 1);
         }
       }
+      noteList.forEach((x, i) => {
+        x.id = i + 1;
+      });
+      console.log(noteList);
+
+      fs.writeFile('./db/db.json', JSON.stringify(noteList), (err, data) => {
+        if (err) throw err;
+      });
+      res.status(204).send();
     });
   });
 };
