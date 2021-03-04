@@ -36,7 +36,7 @@ module.exports = (app) => {
       noteList = JSON.parse(data);
 
       for (var i = 0; i < noteList.length; i++) {
-        if (noteList[i].id === Number(notes)) {
+        if (noteList[i].id === Number(noteId)) {
           noteList.splice([i], 1);
         }
       }
