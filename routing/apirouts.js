@@ -9,17 +9,16 @@ module.exports = (app) => {
     });
   });
   app.post('/api/notes', (req, res) => {
-    const userNotes = req.body;
+    const userNote = req.body;
 
     fs.readFile('./db/db.json', (err, data) => {
       if (err) throw err;
       noteList = JSON.parse(data);
-      noteList.push(userNotes);
+      noteList.push(userNote);
       noteList.forEach((x, y) => {
         x.id = y + 1;
         return noteList;
       });
-      console.log(noteList);
 
       fs.writeFile('./db/db.json', JSON.stringify(noteList), (err, data) => {
         if (err) throw err;
