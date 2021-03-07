@@ -1,53 +1,34 @@
 const fs = require('fs');
+const express = require('express');
+const uniqid = require('uniqid');
+const { finished } = require('stream');
+var storedData = fs.readFileSync('./db/db.json');
+var storedNotes = JSON.parse(storedData);
+console.log(storedNotes);
 
 module.exports = (app) => {
-  app.get('./api/notes', (req, res) => {
-    fs.readFile('./db/db.json', (err, data) => {
-      if (err) throw err;
-      noteList = JSON.parse(data);
-      res.send(noteList);
-    });
+  app.get('/api/notes', (req, res) => {
+    res.json(storedNotes);
   });
+
   app.post('/api/notes', (req, res) => {
-    const userNote = req.body;
+    let userNote = req.body;
+    userNote.id = uniqid();
+    storedNotes.push(userNote);
+    storedData = JSON.stringify(storedNotes);
 
-    fs.readFile('./db/db.json', (err, data) => {
-      if (err) throw err;
-      noteList = JSON.parse(data);
-      noteList.push(userNote);
-      noteList.forEach((x, y) => {
-        x.id = y + 1;
-        return noteList;
-      });
-
-      fs.writeFile('./db/db.json', JSON.stringify(noteList), (err, data) => {
-        if (err) throw err;
-      });
-    });
-    res.status(200).send();
+    fs.writeFile('./db/db.json', storedData, finished);
+    function finished(err) {
+      console.log('new note added');
+      console.log(err);
+    }
+    res.json(userNote);
   });
 
-  app.delete('/api/notes:id', (req, res) => {
-    var noteId = req.params.id;
-
-    fs.readFile('./db/db.json', (err, data) => {
-      if (err) throw err;
-      noteList = JSON.parse(data);
-
-      for (var i = 0; i < noteList.length; i++) {
-        if (noteList[i].id === Number(noteId)) {
-          noteList.splice([i], 1);
-        }
-      }
-      noteList.forEach((x, i) => {
-        x.id = i + 1;
-      });
-      console.log(noteList);
-
-      fs.writeFile('./db/db.json', JSON.stringify(noteList), (err, data) => {
-        if (err) throw err;
-      });
-      res.status(204).send();
-    });
+  app.delete('/api/notes/:id', (req, res) => {
+    console.log(req.params.id);
+    let note = storedNotes.find(({ id }) => id === req.params.id);
+    storedNotes.splice(storedNotes.indexOf(note), 1);
+    res.end('Note Deleted');
   });
 };
